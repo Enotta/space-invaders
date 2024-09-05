@@ -1,20 +1,24 @@
 use bevy::prelude::*;
 
-use crate::starship;
+use crate::starship::Starship;
 
-const BULLET_SIZE: Vec3 = Vec2::new(2.0, 2.0).extend(1.0);
-const BULLET_VELOCITY: f32 = 10.0;
+const BULLET_SCALE: Vec3 = Vec2::new(2.0, 2.0).extend(1.0);
+const BULLET_VELOCITY: f32 = 11.0;
 pub const BULLET_COOLDOWN_TIME: f32 = 0.25;
 
+/// Bullet entity. Shoot from starship on KeyCode::Space
 #[derive(Component)]
-pub struct Unit;
+pub struct Bullet;
 
+/// Cooldown before next bullet can be ejected
 #[derive(Resource)]
 pub struct Cooldown(pub Timer);
 
+/// Bullet texture. Stored in /assets
 #[derive(Resource)]
 pub struct Texture(Handle<Image>);
 
+/// Start bullet cooldown timer
 pub fn load_cooldown_timer(
     mut commands: Commands
 ) {
@@ -22,6 +26,7 @@ pub fn load_cooldown_timer(
     commands.insert_resource(Cooldown(timer));
 }
 
+/// Load bullet texture from /assets
 pub fn load_texture(
     mut commands: Commands,
     asset_server: Res<AssetServer>
@@ -31,6 +36,7 @@ pub fn load_texture(
     commands.insert_resource(Texture(bullet_texture));
 }
 
+/// Tick timer on Update
 pub fn tick_spawn_time(
     time: Res<Time>,
     mut cooldown: ResMut<Cooldown>
@@ -38,9 +44,10 @@ pub fn tick_spawn_time(
     cooldown.0.tick(time.delta());
 }
 
+/// Shoot bullets on Space or hold Space
 pub fn shoot(
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    query: Query<&Transform, With<starship::Body>>,
+    query: Query<&Transform, With<Starship>>,
     mut commands: Commands,
     mut cooldown: ResMut<Cooldown>, 
     bullet_texture: Res<Texture>
@@ -52,33 +59,35 @@ pub fn shoot(
             SpriteBundle {
                 transform: Transform {
                     translation: starship_pos.translation,
-                    scale: BULLET_SIZE,
+                    scale: BULLET_SCALE,
                     ..default()
                 },
                 texture: bullet_texture.0.clone(),
                 ..default()
             },
-            Unit
+            Bullet
         ));
 
         cooldown.0.reset();
     }
 }
 
+/// Move bullets on the screen at BULLET_VELOCITY
 pub fn mv(
-    mut query: Query<&mut Transform, With<Unit>>
+    mut query: Query<&mut Transform, With<Bullet>>
 ) {
     query.iter_mut().for_each(|mut bullet_pos| {
         bullet_pos.translation.y += BULLET_VELOCITY;
     })
 }
 
+/// Delete bullet when goes out from scope 
 pub fn delete(
-    query: Query<(Entity, &Transform), With<Unit>>,
+    query: Query<(Entity, &Transform), With<Bullet>>,
     mut commands: Commands
 ) {
     for (bullet, bullet_pos) in query.iter() {
-        if bullet_pos.translation.y > 400.0 {
+        if bullet_pos.translation.y > crate::WINDOW_HEIGHT / 2.1 {
             commands.entity(bullet).despawn();
         }
     }
