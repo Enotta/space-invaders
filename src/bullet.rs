@@ -4,6 +4,7 @@ use crate::starship::Starship;
 
 const BULLET_SCALE: Vec3 = Vec2::new(2.0, 2.0).extend(1.0);
 const BULLET_VELOCITY: f32 = 11.0;
+pub const BULLET_SIZE: Vec2 = Vec2::new(20.0, 6.0);
 pub const BULLET_COOLDOWN_TIME: f32 = 0.25;
 
 /// Bullet entity. Shoot from starship on KeyCode::Space

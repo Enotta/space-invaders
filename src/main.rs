@@ -1,12 +1,17 @@
 use bevy::{
-    prelude::*, render::camera::ScalingMode, window::{WindowMode, WindowResolution}
+    prelude::*, 
+    render::camera::ScalingMode, 
+    window::{WindowMode, WindowResolution},
 };
 
 mod animation;
+mod collision;
 mod starship;
 mod alien;
 mod bullet;
 
+use animation::execute_animation;
+use collision::bullet_x_allien_collision;
 use starship::{Starship, STARSHIP_POS, STARSHIP_SCALE};
 use alien::{Alien, ALIEN_SCALE, ALIEN_SIZE};
 
@@ -90,7 +95,8 @@ fn main() {
         ).chain())
         .add_systems(Startup, setup) 
         .add_systems(Update, (
-            animation::execute_animation::<Alien>
+            bullet_x_allien_collision,
+            execute_animation::<Alien>
         ).chain())
         .add_systems(FixedUpdate, ( // load game logic
             starship::mv, 
