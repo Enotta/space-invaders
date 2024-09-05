@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use crate::bullet::{Bullet, BULLET_SIZE};
 use crate::alien::{Alien, ALIEN_SIZE};
 
+/// Despawn bullet and alien on collision
 pub fn bullet_x_allien_collision(
     mut commands: Commands,
     mut bullets: Query<(Entity, &Transform), With<Bullet>>,
@@ -18,6 +19,7 @@ pub fn bullet_x_allien_collision(
     }
 }
 
+/// Check if the bullet and the alien intersects
 fn intersect(
     bullet_pos: Vec3,
     alien_pos: Vec3
