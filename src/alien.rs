@@ -5,7 +5,33 @@ pub const ALIEN_SCALE: Vec3 = Vec2::new(1.0, 1.0).extend(1.0);
 
 /// Alien unit
 #[derive(Component, Debug)]
-pub struct Alien;
+pub struct Alien {
+    row: usize,
+    col: usize
+}
+
+impl Alien {
+    /// Creates new alien at given pos
+    pub fn new(
+        r: usize, 
+        c: usize
+    ) -> Self {
+        Self {
+            row: r,
+            col: c
+        }
+    }
+
+    /// Get alien row number
+    pub fn get_row(&self) -> usize {
+        self.row
+    }
+
+    /// Get alien col number
+    pub fn get_col(&self) -> usize {
+        self.col
+    }
+}
 
 /// Alien texture (two sprites). Load from /assets
 #[derive(Resource)]

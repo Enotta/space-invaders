@@ -9,7 +9,6 @@ mod collision;
 mod starship;
 mod alien;
 mod alien_matrix;
-mod alien_position;
 mod bullet;
 
 use animation::execute_animation;
@@ -71,7 +70,6 @@ fn main() {
             starship::load_texture,
             alien::load_texture_atlas,
             alien_matrix::load_spawn_cooldown_timer,
-            alien_matrix::load_alien_matrix,
             alien_matrix::load_matrix_state
         ).chain())
         .add_systems(Startup, setup) 
