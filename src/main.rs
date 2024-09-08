@@ -8,21 +8,21 @@ mod animation;
 mod collision;
 mod starship;
 mod alien;
+mod alien_matrix;
+mod alien_position;
 mod bullet;
 
 use animation::execute_animation;
 use collision::bullet_x_allien_collision;
 use starship::{Starship, STARSHIP_POS, STARSHIP_SCALE};
-use alien::{Alien, ALIEN_SCALE, ALIEN_SIZE};
+use alien::Alien;
 
 const WINDOW_WIDTH: f32 = 1920.0;
 const WINDOW_HEIGHT: f32 = 1080.0;
 
 fn setup(
     mut commands: Commands,
-    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
-    starship_texture: Res<starship::Texture>,
-    alien_texture_atlas: Res<alien::Texture>
+    starship_texture: Res<starship::Texture>
 ) {
     // Camera setup. Game renders at 1920x1080 and stretch to any window size
     commands.spawn(
@@ -50,28 +50,6 @@ fn setup(
         },
         Starship
     ));
-    
-    // Aliens: require(texture_atlas, animation)
-    let alien_layout = TextureAtlasLayout::from_grid(ALIEN_SIZE, 2, 1, None, None);
-    let alien_texture_atlas_layout = texture_atlas_layouts.add(alien_layout);
-    let alien_animation_config = animation::Config::new(0, 1, 2);
-    commands.spawn((
-        SpriteBundle {
-            transform: Transform {
-                translation: Vec3::new(0.0, 0.0, 0.0),
-                scale: ALIEN_SCALE,
-                ..default()
-            },
-            texture: alien_texture_atlas.0.clone(),
-            ..default()
-        },
-        TextureAtlas {
-            layout: alien_texture_atlas_layout.clone(),
-            index: alien_animation_config.first_frame
-        },
-        Alien,
-        alien_animation_config
-    ));
 }
 
 fn main() {
@@ -91,19 +69,24 @@ fn main() {
             bullet::load_cooldown_timer,
             bullet::load_texture,
             starship::load_texture,
-            alien::load_texture_atlas
+            alien::load_texture_atlas,
+            alien_matrix::load_spawn_cooldown_timer,
+            alien_matrix::load_alien_matrix,
+            alien_matrix::load_matrix_state
         ).chain())
         .add_systems(Startup, setup) 
         .add_systems(Update, (
             bullet_x_allien_collision,
-            execute_animation::<Alien>
+            execute_animation::<Alien>,
+            bullet::tick_spawn_timer,
+            alien_matrix::tick_spawn_cooldown_timer,
         ).chain())
         .add_systems(FixedUpdate, ( // load game logic
             starship::mv, 
-            bullet::tick_spawn_time,
             bullet::shoot,
             bullet::mv,
-            bullet::delete
+            bullet::delete,
+            alien_matrix::spawn_aliens
         ).chain())
         .run();
 }

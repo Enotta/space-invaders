@@ -3,7 +3,7 @@ use std::time::Duration;
 use bevy::prelude::*;
 
 /// Animation config
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct Config {
     pub first_frame: usize,
     pub last_frame: usize,
@@ -20,6 +20,7 @@ impl Config {
         }
     }
 
+    /// Converts given fps into timer for one frame to complete
     fn get_timer_from_fps(fps: u8) -> Timer {
         Timer::new(Duration::from_secs_f32(1.0 / (fps as f32)), TimerMode::Once)
     }

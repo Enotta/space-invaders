@@ -4,7 +4,7 @@ pub const ALIEN_SIZE: UVec2 = UVec2::new(35, 26);
 pub const ALIEN_SCALE: Vec3 = Vec2::new(1.0, 1.0).extend(1.0);
 
 /// Alien unit
-#[derive(Component)]
+#[derive(Component, Debug)]
 pub struct Alien;
 
 /// Alien texture (two sprites). Load from /assets
@@ -19,4 +19,3 @@ pub fn load_texture_atlas(
     let alien_texturs_atlas: Handle<Image> = asset_server.load("alien_atlas.png");
     commands.insert_resource(Texture(alien_texturs_atlas));
 }
-
