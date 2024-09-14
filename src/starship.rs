@@ -2,8 +2,8 @@ use bevy::prelude::*;
 
 const STARSHIP_VELOCITY: f32 = 6.0;
 const STARSHIP_SIZE: Vec2 = Vec2::new(40.0, 40.0);
-pub const STARSHIP_SCALE: Vec3 = Vec2::new(1.0, 1.0).extend(1.0);
-pub const STARSHIP_POS: Vec3 = Vec3::new(0.0, -400.0, 0.0);
+const STARSHIP_SCALE: Vec3 = Vec2::new(1.0, 1.0).extend(1.0);
+const STARSHIP_POS: Vec3 = Vec3::new(0.0, -400.0, 0.0);
 
 /// Starship entity. Presented in single unit
 #[derive(Component)]
@@ -20,6 +20,25 @@ pub fn load_texture(
 ) {
     let starship_texture: Handle<Image> = asset_server.load("starship.png");
     commands.insert_resource(Texture(starship_texture));
+}
+
+/// Place starship on the field
+pub fn spawn(
+    mut commands: Commands,
+    starship_texture: Res<Texture>
+) {
+    commands.spawn((
+        SpriteBundle {
+            transform: Transform {
+                translation: STARSHIP_POS,
+                scale: STARSHIP_SCALE,
+                ..default()
+            },
+            texture: starship_texture.0.clone(),
+            ..default()
+        },
+        Starship
+    ));
 }
 
 /// Move starship. Limited by window borders

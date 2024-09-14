@@ -1,10 +1,11 @@
 use bevy::prelude::*;
 
 use crate::starship::Starship;
+use crate::alien_matrix::{FullnessState, MatrixState};
 
 const BULLET_SCALE: Vec3 = Vec2::new(2.0, 2.0).extend(1.0);
 const BULLET_VELOCITY: f32 = 11.0;
-pub const BULLET_COOLDOWN_TIME: f32 = 0.25;
+const BULLET_COOLDOWN_TIME: f32 = 0.25;
 
 /// Bullet entity. Shoot from starship on KeyCode::Space
 #[derive(Component)]
@@ -50,11 +51,12 @@ pub fn shoot(
     query: Query<&Transform, With<Starship>>,
     mut commands: Commands,
     mut cooldown: ResMut<Cooldown>, 
-    bullet_texture: Res<Texture>
+    bullet_texture: Res<Texture>,
+    matrix_state: Res<MatrixState>
 ) {
     let starship_pos = query.single();
 
-    if keyboard_input.pressed(KeyCode::Space) && cooldown.0.finished() {
+    if keyboard_input.pressed(KeyCode::Space) && cooldown.0.finished() && matrix_state.0 != FullnessState::Filling {
         commands.spawn((
             SpriteBundle {
                 transform: Transform {
