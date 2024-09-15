@@ -11,9 +11,10 @@ mod alien;
 mod alien_matrix;
 mod alien_spawn_cooldown;
 mod bullet;
+mod building;
 
 use animation::execute_animation;
-use collision::bullet_x_allien_collision;
+use collision::{alien_x_building_collision, bullet_x_allien_collision, bullet_x_building_collision};
 use alien::Alien;
 
 const WINDOW_WIDTH: f32 = 1920.0;
@@ -56,14 +57,18 @@ fn main() {
             starship::load_texture,
             alien::load_texture_atlas,
             alien_spawn_cooldown::load_spawn_cooldown_timer,
-            alien_matrix::load_matrix_state
+            alien_matrix::load_matrix_state,
+            building::load_textures
         ).chain())
         .add_systems(Startup, (
             setup_camera,
-            starship::spawn
+            starship::spawn,
+            building::spawn
         ).chain()) 
         .add_systems(Update, (
             bullet_x_allien_collision,
+            bullet_x_building_collision,
+            alien_x_building_collision,
             execute_animation::<Alien>,
             bullet::tick_spawn_timer,
             alien_spawn_cooldown::tick_spawn_cooldown_timer,
@@ -72,7 +77,7 @@ fn main() {
             starship::mv, 
             bullet::shoot,
             bullet::mv,
-            bullet::delete,
+            bullet::despawn,
             alien_matrix::spawn_matrix,
             alien::mv
         ).chain())

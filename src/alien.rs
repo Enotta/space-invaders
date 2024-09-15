@@ -3,8 +3,8 @@ use bevy::prelude::*;
 use crate::alien_matrix::{FullnessState, MatrixState, ALIEN_MATRIX_WIDTH, GAP_X, GAP_Y};
 
 pub const ALIEN_SIZE: UVec2 = UVec2::new(35, 26);
-pub const ALIEN_SCALE: Vec3 = Vec2::new(1.0, 1.0).extend(1.0);
-const ALIEN_VELOCITY: f32 = 1.5;
+pub const ALIEN_SCALE: Vec3 = Vec3::new(1.0, 1.0, 1.0);
+const ALIEN_VELOCITY: f32 = 1.2;
 const LEFT_ABSOLUTE_BORDER: f32 = -400.0;
 const RIGHT_ABSOLUTE_BORDER: f32 = 400.0;
 

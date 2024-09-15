@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::starship::Starship;
 use crate::alien_matrix::{FullnessState, MatrixState};
 
-const BULLET_SCALE: Vec3 = Vec2::new(2.0, 2.0).extend(1.0);
+const BULLET_SCALE: Vec3 = Vec3::new(2.0, 2.0, 1.0);
 const BULLET_VELOCITY: f32 = 11.0;
 const BULLET_COOLDOWN_TIME: f32 = 0.25;
 
@@ -84,7 +84,7 @@ pub fn mv(
 }
 
 /// Delete bullet when goes out from scope 
-pub fn delete(
+pub fn despawn(
     query: Query<(Entity, &Transform), With<Bullet>>,
     mut commands: Commands
 ) {

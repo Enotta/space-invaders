@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 const STARSHIP_VELOCITY: f32 = 6.0;
 const STARSHIP_SIZE: Vec2 = Vec2::new(40.0, 40.0);
-const STARSHIP_SCALE: Vec3 = Vec2::new(1.0, 1.0).extend(1.0);
+const STARSHIP_SCALE: Vec3 = Vec3::new(1.0, 1.0, 1.0);
 const STARSHIP_POS: Vec3 = Vec3::new(0.0, -400.0, 0.0);
 
 /// Starship entity. Presented in single unit
