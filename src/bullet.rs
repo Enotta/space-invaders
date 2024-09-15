@@ -54,6 +54,7 @@ pub fn shoot(
     bullet_texture: Res<Texture>,
     matrix_state: Res<MatrixState>
 ) {
+    if query.iter().len() == 0 { return; }
     let starship_pos = query.single();
 
     if keyboard_input.pressed(KeyCode::Space) && cooldown.0.finished() && matrix_state.0 != FullnessState::Filling {

@@ -46,6 +46,7 @@ pub fn mv(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut query: Query<&mut Transform, With<Starship>>
 ) {
+    if query.iter().len() == 0 { return; }
     let mut starship_pos = query.single_mut();
 
     if keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::ArrowLeft) {

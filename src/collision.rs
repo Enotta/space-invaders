@@ -22,13 +22,13 @@ pub fn bullet_x_allien_collision(
                 commands.entity(alien).despawn();
                 aliens_num -= 1;
 
-                if aliens_num == 0 {
-                    empty_check.0 = FullnessState::Empty;
-                }
-
                 break;
             }
         }
+    }
+
+    if aliens_num == 0 {
+        empty_check.0 = FullnessState::Empty;
     }
 }
 
@@ -87,8 +87,13 @@ pub fn alien_x_building_collision(
     let mut aliens_num = aliens.iter().len();
 
     for (alien, alien_pos) in aliens.iter_mut() {
+        if alien_pos.translation.y < -300.0 {
+            commands.entity(alien).despawn();
+            aliens_num -= 1;
+        }
+
         for (building, building_pos, mut building_conf, mut building_texture) in buildings.iter_mut() {
-            if alien_x_building_intersect(alien_pos.translation, building_pos.translation) {
+            if alien_x_building_intersect(alien_pos.translation, building_pos.translation)  {
                 commands.entity(alien).despawn();
                 aliens_num -= 1;
                 
@@ -106,11 +111,13 @@ pub fn alien_x_building_collision(
                     *building_texture = building_textures.2.clone();
                 }
 
-                if aliens_num == 0 {
-                    empty_check.0 = FullnessState::Empty;
-                }
+                break;
             }
         }
+    }
+
+    if aliens_num == 0 {
+        empty_check.0 = FullnessState::Empty;
     }
 }
 

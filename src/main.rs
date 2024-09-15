@@ -12,6 +12,7 @@ mod alien_matrix;
 mod alien_spawn_cooldown;
 mod bullet;
 mod building;
+mod game_logic;
 
 use animation::execute_animation;
 use collision::{alien_x_building_collision, bullet_x_allien_collision, bullet_x_building_collision};
@@ -72,6 +73,7 @@ fn main() {
             execute_animation::<Alien>,
             bullet::tick_spawn_timer,
             alien_spawn_cooldown::tick_spawn_cooldown_timer,
+            game_logic::check_loss
         ).chain())
         .add_systems(FixedUpdate, ( // load game logic
             starship::mv, 
