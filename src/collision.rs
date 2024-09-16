@@ -5,13 +5,15 @@ use crate::building::{self, Building, BUILDING_SIZE};
 use crate::bullet::Bullet;
 use crate::alien::{Alien, ALIEN_SIZE};
 use crate::alien_matrix::FullnessState;
+use crate::game_logic::CurrentScore;
 
 /// Despawn bullet and alien on collision
 pub fn bullet_x_allien_collision(
     mut commands: Commands,
     mut bullets: Query<(Entity, &Transform), With<Bullet>>,
     mut aliens: Query<(Entity, &Transform), With<Alien>>,
-    mut empty_check: ResMut<MatrixState>
+    mut empty_check: ResMut<MatrixState>,
+    mut cur_score: ResMut<CurrentScore>
 ) {
     let mut aliens_num = aliens.iter().len();
 
@@ -21,6 +23,7 @@ pub fn bullet_x_allien_collision(
                 commands.entity(bullet).despawn();
                 commands.entity(alien).despawn();
                 aliens_num -= 1;
+                cur_score.0 += 50;
 
                 break;
             }

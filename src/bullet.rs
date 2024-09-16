@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use crate::game_logic::CurrentScore;
 use crate::starship::Starship;
 use crate::alien_matrix::{FullnessState, MatrixState};
 
@@ -87,11 +88,15 @@ pub fn mv(
 /// Delete bullet when goes out from scope 
 pub fn despawn(
     query: Query<(Entity, &Transform), With<Bullet>>,
-    mut commands: Commands
+    mut commands: Commands,
+    mut cur_score: ResMut<CurrentScore>
 ) {
     for (bullet, bullet_pos) in query.iter() {
         if bullet_pos.translation.y > crate::WINDOW_HEIGHT / 2.1 {
             commands.entity(bullet).despawn();
+            if cur_score.0 > 0 {
+                cur_score.0 -= 10;
+            }
         }
     }
 }

@@ -59,12 +59,15 @@ fn main() {
             alien::load_texture_atlas,
             alien_spawn_cooldown::load_spawn_cooldown_timer,
             alien_matrix::load_matrix_state,
-            building::load_textures
+            building::load_textures,
+            game_logic::load_best_score,
+            game_logic::load_current_score
         ).chain())
         .add_systems(Startup, (
             setup_camera,
             starship::spawn,
-            building::spawn
+            building::spawn,
+            game_logic::spawn_current_score
         ).chain()) 
         .add_systems(Update, (
             bullet_x_allien_collision,
@@ -73,7 +76,8 @@ fn main() {
             execute_animation::<Alien>,
             bullet::tick_spawn_timer,
             alien_spawn_cooldown::tick_spawn_cooldown_timer,
-            game_logic::check_loss
+            game_logic::check_loss,
+            game_logic::display_score
         ).chain())
         .add_systems(FixedUpdate, ( // load game logic
             starship::mv, 
