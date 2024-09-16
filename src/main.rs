@@ -1,3 +1,4 @@
+use alien_spawn_cooldown::AlienSpawnCooldown;
 use bevy::{
     prelude::*, 
     render::camera::ScalingMode, 
@@ -16,8 +17,11 @@ mod game_logic;
 mod score;
 
 use animation::execute_animation;
+use building::{Building, BuildingTexture};
+use bullet::{Bullet, BulletCooldown, BulletTexture};
 use collision::{alien_x_building_collision, bullet_x_allien_collision, bullet_x_building_collision};
-use alien::Alien;
+use alien::{Alien, AlienTextureAtlas};
+use starship::{Starship, StarshipTexture};
 
 const WINDOW_WIDTH: f32 = 1920.0;
 const WINDOW_HEIGHT: f32 = 1080.0;
@@ -54,19 +58,19 @@ fn main() {
             }
         ))
         .add_systems(PreStartup, ( // load resources
-            bullet::load_spawn_timer,
-            bullet::load_texture,
-            starship::load_texture,
-            alien::load_texture_atlas,
-            alien_spawn_cooldown::load_spawn_cooldown_timer,
-            alien_matrix::load_matrix_state,
-            building::load_textures,
+            BulletCooldown::load,
+            BulletTexture::load,
+            StarshipTexture::load,
+            AlienTextureAtlas::load,
+            AlienSpawnCooldown::load,
+            alien_matrix::MatrixState::load,
+            BuildingTexture::load,
             score::load_scores,
         ).chain())
         .add_systems(Startup, (
             setup_camera,
-            starship::spawn,
-            building::spawn,
+            Starship::spawn,
+            Building::spawn,
             score::CurrentScore::spawn
         ).chain()) 
         .add_systems(Update, (
@@ -74,18 +78,18 @@ fn main() {
             bullet_x_building_collision,
             alien_x_building_collision,
             execute_animation::<Alien>,
-            bullet::tick_spawn_timer,
-            alien_spawn_cooldown::tick_spawn_cooldown_timer,
+            BulletCooldown::tick,
+            AlienSpawnCooldown::tick,
             game_logic::run,
             score::CurrentScore::display
         ).chain())
         .add_systems(FixedUpdate, ( // load game logic
-            starship::mv, 
-            bullet::shoot,
-            bullet::mv,
-            bullet::despawn,
+            Starship::mv, 
+            Bullet::shoot,
+            Bullet::mv,
+            Bullet::despawn,
             alien_matrix::spawn_matrix,
-            alien::mv
+            Alien::mv
         ).chain())
         .run();
 }

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::alien_matrix::MatrixState;
-use crate::building::{self, Building, BUILDING_SIZE};
+use crate::building::{Building, BuildingTexture, BUILDING_SIZE};
 use crate::bullet::Bullet;
 use crate::alien::{Alien, ALIEN_SIZE};
 use crate::alien_matrix::FullnessState;
@@ -84,7 +84,7 @@ pub fn alien_x_building_collision(
     mut commands: Commands,
     mut aliens: Query<(Entity, &Transform), With<Alien>>,
     mut buildings: Query<(Entity, &Transform, &mut Building, &mut Handle<Image>), With<Building>>,
-    building_textures: Res<building::Texture>,
+    building_textures: Res<BuildingTexture>,
     mut empty_check: ResMut<MatrixState>
 ) {
     let mut aliens_num = aliens.iter().len();

@@ -9,54 +9,58 @@ const STARSHIP_POS: Vec3 = Vec3::new(0.0, -400.0, 0.0);
 #[derive(Component)]
 pub struct Starship;
 
-/// Starship texture. Load from /assets
-#[derive(Resource)]
-pub struct Texture(pub Handle<Image>);
-
-/// Load starship texture from /assets
-pub fn load_texture(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>
-) {
-    let starship_texture: Handle<Image> = asset_server.load("starship.png");
-    commands.insert_resource(Texture(starship_texture));
-}
-
-/// Place starship on the field
-pub fn spawn(
-    mut commands: Commands,
-    starship_texture: Res<Texture>
-) {
-    commands.spawn((
-        SpriteBundle {
-            transform: Transform {
-                translation: STARSHIP_POS,
-                scale: STARSHIP_SCALE,
+impl Starship {
+    /// Place starship on the field
+    pub fn spawn(
+        mut commands: Commands,
+        starship_texture: Res<StarshipTexture>
+    ) {
+        commands.spawn((
+            SpriteBundle {
+                transform: Transform {
+                    translation: STARSHIP_POS,
+                    scale: STARSHIP_SCALE,
+                    ..default()
+                },
+                texture: starship_texture.0.clone(),
                 ..default()
             },
-            texture: starship_texture.0.clone(),
-            ..default()
-        },
-        Starship
-    ));
-}
+            Self
+        ));
+    }
 
-/// Move starship. Limited by window borders
-pub fn mv(
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut query: Query<&mut Transform, With<Starship>>
-) {
-    if query.iter().len() == 0 { return; }
-    let mut starship_pos = query.single_mut();
+    /// Move starship. Limited by window borders
+    pub fn mv(
+        keyboard_input: Res<ButtonInput<KeyCode>>,
+        mut query: Query<&mut Transform, With<Self>>
+    ) {
+        if query.iter().len() == 0 { return; }
+        let mut starship_pos = query.single_mut();
 
-    if keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::ArrowLeft) {
-        if starship_pos.translation.x > (-crate::WINDOW_WIDTH + STARSHIP_SIZE.x) / 2.0 {
-            starship_pos.translation.x -= STARSHIP_VELOCITY;
+        if keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::ArrowLeft) {
+            if starship_pos.translation.x > (-crate::WINDOW_WIDTH + STARSHIP_SIZE.x) / 2.0 {
+                starship_pos.translation.x -= STARSHIP_VELOCITY;
+            }
+        }
+        else if keyboard_input.pressed(KeyCode::KeyD) ||  keyboard_input.pressed(KeyCode::ArrowRight) {
+            if starship_pos.translation.x < (crate::WINDOW_WIDTH - STARSHIP_SIZE.x) / 2.0 {
+                starship_pos.translation.x += STARSHIP_VELOCITY;
+            }
         }
     }
-    else if keyboard_input.pressed(KeyCode::KeyD) ||  keyboard_input.pressed(KeyCode::ArrowRight) {
-        if starship_pos.translation.x < (crate::WINDOW_WIDTH - STARSHIP_SIZE.x) / 2.0 {
-            starship_pos.translation.x += STARSHIP_VELOCITY;
-        }
+}
+
+/// Starship texture. Load from /assets
+#[derive(Resource)]
+pub struct StarshipTexture(pub Handle<Image>);
+
+impl StarshipTexture {
+    /// Load starship texture from /assets
+    pub fn load(
+        mut commands: Commands,
+        asset_server: Res<AssetServer>
+    ) {
+        let starship_texture: Handle<Image> = asset_server.load("starship.png");
+        commands.insert_resource(Self(starship_texture));
     }
 }

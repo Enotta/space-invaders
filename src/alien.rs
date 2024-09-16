@@ -49,41 +49,43 @@ impl Alien {
     pub fn get_dir(&self) -> AlienMovementDirection {
         self.dir
     }
+
+    /// Move aliens on the screen on matrix state condition
+    pub fn mv(
+        mut query: Query<(&mut Transform, &mut Self)>,
+        matrix_state: Res<MatrixState>
+    ) {
+        if matrix_state.0 == FullnessState::Full {
+            for (mut alien_pos, mut alien) in query.iter_mut() {
+                match alien.dir {
+                    AlienMovementDirection::Left => {alien_pos.translation.x -= ALIEN_VELOCITY},
+                    AlienMovementDirection::Right => {alien_pos.translation.x += ALIEN_VELOCITY}
+                }
+        
+                if alien_pos.translation.x < LEFT_ABSOLUTE_BORDER + ((alien.get_col() as f32) + 0.5) * (ALIEN_SIZE.x as f32) + ((alien.get_col() as f32)) * (GAP_X as f32) {
+                    alien.dir = AlienMovementDirection::Right;
+                    alien_pos.translation.y -= (ALIEN_SIZE.y as f32) + GAP_Y;
+                }
+                else if alien_pos.translation.x > RIGHT_ABSOLUTE_BORDER - ((ALIEN_MATRIX_WIDTH as f32) - (alien.get_col() as f32) + 0.5) * (ALIEN_SIZE.x as f32) - ((ALIEN_MATRIX_WIDTH as f32) - (alien.get_col() as f32)) * (GAP_X as f32) {
+                    alien.dir = AlienMovementDirection::Left;
+                    alien_pos.translation.y -= (ALIEN_SIZE.y as f32) + GAP_Y;
+                }
+            }
+        }
+    }
 }
 
 /// Alien texture (two sprites). Load from /assets
 #[derive(Resource)]
-pub struct Texture(pub Handle<Image>);
+pub struct AlienTextureAtlas(pub Handle<Image>);
 
-/// Load texture from /assets
-pub fn load_texture_atlas(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>
-) {
-    let alien_texturs_atlas: Handle<Image> = asset_server.load("alien_atlas.png");
-    commands.insert_resource(Texture(alien_texturs_atlas));
-}
-
-/// Move aliens on the screen on matrix state condition
-pub fn mv(
-    mut query: Query<(&mut Transform, &mut Alien)>,
-    matrix_state: Res<MatrixState>
-) {
-    if matrix_state.0 == FullnessState::Full {
-        for (mut alien_pos, mut alien) in query.iter_mut() {
-            match alien.dir {
-                AlienMovementDirection::Left => {alien_pos.translation.x -= ALIEN_VELOCITY},
-                AlienMovementDirection::Right => {alien_pos.translation.x += ALIEN_VELOCITY}
-            }
-    
-            if alien_pos.translation.x < LEFT_ABSOLUTE_BORDER + ((alien.get_col() as f32) + 0.5) * (ALIEN_SIZE.x as f32) + ((alien.get_col() as f32)) * (GAP_X as f32) {
-                alien.dir = AlienMovementDirection::Right;
-                alien_pos.translation.y -= (ALIEN_SIZE.y as f32) + GAP_Y;
-            }
-            else if alien_pos.translation.x > RIGHT_ABSOLUTE_BORDER - ((ALIEN_MATRIX_WIDTH as f32) - (alien.get_col() as f32) + 0.5) * (ALIEN_SIZE.x as f32) - ((ALIEN_MATRIX_WIDTH as f32) - (alien.get_col() as f32)) * (GAP_X as f32) {
-                alien.dir = AlienMovementDirection::Left;
-                alien_pos.translation.y -= (ALIEN_SIZE.y as f32) + GAP_Y;
-            }
-        }
+impl AlienTextureAtlas {
+    /// Load texture from /assets
+    pub fn load(
+        mut commands: Commands,
+        asset_server: Res<AssetServer>
+    ) {
+        let alien_texturs_atlas: Handle<Image> = asset_server.load("alien_atlas.png");
+        commands.insert_resource(Self(alien_texturs_atlas));
     }
 }

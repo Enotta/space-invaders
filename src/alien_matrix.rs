@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
-use crate::alien::{Alien, Texture, ALIEN_SCALE, ALIEN_SIZE};
-use crate::alien_spawn_cooldown::SpawnCooldown;
+use crate::alien::{Alien, AlienTextureAtlas, ALIEN_SCALE, ALIEN_SIZE};
+use crate::alien_spawn_cooldown::AlienSpawnCooldown;
 use crate::animation;
 
 pub const ALIEN_MATRIX_WIDTH: usize = 12;
@@ -20,11 +20,13 @@ pub enum FullnessState {
 #[derive(Resource)]
 pub struct MatrixState(pub FullnessState);
 
-/// Insert state. In the beggining matrix is empty
-pub fn load_matrix_state(
-    mut commands: Commands
-) {
-    commands.insert_resource(MatrixState(FullnessState::Empty));
+impl MatrixState {
+    /// Insert state. In the beggining matrix is empty
+    pub fn load(
+        mut commands: Commands
+    ) {
+        commands.insert_resource(MatrixState(FullnessState::Empty));
+    }
 }
 
 /// Spawn new lines of aliens
@@ -32,8 +34,8 @@ pub fn spawn_matrix(
     mut commands: Commands,
     aliens: Query<&Alien>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
-    alien_texture_atlas: Res<Texture>,
-    mut timer: ResMut<SpawnCooldown>,
+    alien_texture_atlas: Res<AlienTextureAtlas>,
+    mut timer: ResMut<AlienSpawnCooldown>,
     mut check: ResMut<MatrixState>
 ) {
     if timer.0.finished() && (check.0 == FullnessState::Empty || check.0 == FullnessState::Filling) {

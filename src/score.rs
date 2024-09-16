@@ -43,7 +43,7 @@ impl CurrentScore {
     /// Update score on the
     pub fn display(
         mut texts: Query<&mut Text>,
-        cur_score: Res<CurrentScore>
+        cur_score: Res<Self>
     ) {
         for mut text in texts.iter_mut() {
             if text.sections[0].value.starts_with("Score: ") {

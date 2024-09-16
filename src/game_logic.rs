@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 
-use crate::{building::{self, Building}, score::{self, CurrentScore, BestScore}, starship};
+use crate::{building::{Building, BuildingTexture}, 
+            score::{self, BestScore, CurrentScore},
+            starship::{Starship, StarshipTexture}};
 
 /// Game over screen if all buildings are destroyed. Restart on ENTER
 pub fn run(
@@ -17,8 +19,8 @@ pub fn run(
     starship_commands: Commands,
     building_commands: Commands,
     score_commands: Commands,
-    starship_texture: Res<starship::Texture>,
-    building_texture: Res<building::Texture>
+    starship_texture: Res<StarshipTexture>,
+    building_texture: Res<BuildingTexture>
 ) {
     if buildings.iter().len() == 0 {
         if cur_score.0 > best_score.0 {
@@ -48,8 +50,8 @@ pub fn run(
 
         if keyboard_input.pressed(KeyCode::Enter) {
             cur_score.0 = 0;
-            starship::spawn(starship_commands, starship_texture);
-            building::spawn(building_commands, building_texture);
+            Starship::spawn(starship_commands, starship_texture);
+            Building::spawn(building_commands, building_texture);
             score::CurrentScore::spawn(score_commands);
         }
     }
