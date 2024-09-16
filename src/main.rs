@@ -13,6 +13,7 @@ mod alien_spawn_cooldown;
 mod bullet;
 mod building;
 mod game_logic;
+mod score;
 
 use animation::execute_animation;
 use collision::{alien_x_building_collision, bullet_x_allien_collision, bullet_x_building_collision};
@@ -53,21 +54,20 @@ fn main() {
             }
         ))
         .add_systems(PreStartup, ( // load resources
-            bullet::load_cooldown_timer,
+            bullet::load_spawn_timer,
             bullet::load_texture,
             starship::load_texture,
             alien::load_texture_atlas,
             alien_spawn_cooldown::load_spawn_cooldown_timer,
             alien_matrix::load_matrix_state,
             building::load_textures,
-            game_logic::load_best_score,
-            game_logic::load_current_score
+            score::load_scores,
         ).chain())
         .add_systems(Startup, (
             setup_camera,
             starship::spawn,
             building::spawn,
-            game_logic::spawn_current_score
+            score::CurrentScore::spawn
         ).chain()) 
         .add_systems(Update, (
             bullet_x_allien_collision,
@@ -76,8 +76,8 @@ fn main() {
             execute_animation::<Alien>,
             bullet::tick_spawn_timer,
             alien_spawn_cooldown::tick_spawn_cooldown_timer,
-            game_logic::check_loss,
-            game_logic::display_score
+            game_logic::run,
+            score::CurrentScore::display
         ).chain())
         .add_systems(FixedUpdate, ( // load game logic
             starship::mv, 

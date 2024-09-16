@@ -5,7 +5,7 @@ use crate::building::{self, Building, BUILDING_SIZE};
 use crate::bullet::Bullet;
 use crate::alien::{Alien, ALIEN_SIZE};
 use crate::alien_matrix::FullnessState;
-use crate::game_logic::CurrentScore;
+use crate::score::CurrentScore;
 
 /// Despawn bullet and alien on collision
 pub fn bullet_x_allien_collision(
@@ -65,7 +65,7 @@ pub fn bullet_x_building_collision(
     }
 }
 
-/// Check if the bullet and the alien intersects
+/// Check if the bullet and the building intersects
 fn bullet_x_building_intersect(
     bullet_pos: Vec3,
     building_pos: Vec3

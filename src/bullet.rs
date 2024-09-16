@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game_logic::CurrentScore;
+use crate::score::CurrentScore;
 use crate::starship::Starship;
 use crate::alien_matrix::{FullnessState, MatrixState};
 
@@ -21,7 +21,7 @@ pub struct Cooldown(pub Timer);
 pub struct Texture(Handle<Image>);
 
 /// Start bullet cooldown timer
-pub fn load_cooldown_timer(
+pub fn load_spawn_timer(
     mut commands: Commands
 ) {
     let timer = Timer::from_seconds(BULLET_COOLDOWN_TIME, TimerMode::Once);
@@ -33,7 +33,6 @@ pub fn load_texture(
     mut commands: Commands,
     asset_server: Res<AssetServer>
 ) {
-    
     let bullet_texture: Handle<Image> = asset_server.load("bullet.png");
     commands.insert_resource(Texture(bullet_texture));
 }
@@ -85,7 +84,7 @@ pub fn mv(
     })
 }
 
-/// Delete bullet when goes out from scope 
+/// Delete bullet when goes out from scope. Decrease score if bullet misses
 pub fn despawn(
     query: Query<(Entity, &Transform), With<Bullet>>,
     mut commands: Commands,

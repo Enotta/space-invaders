@@ -37,6 +37,7 @@ pub fn load_textures(
     commands.insert_resource(Texture(house0, house1, house2, house3));
 }
 
+/// Spawn row of undamaged buildings
 pub fn spawn(
     mut commands: Commands,
     texture: Res<Texture>
