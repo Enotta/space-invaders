@@ -101,17 +101,12 @@ pub fn alien_x_building_collision(
                 aliens_num -= 1;
                 
                 building_conf.state -= 1;
-                if building_conf.state == -1 {
-                    commands.entity(building).despawn();
-                }
-                else if building_conf.state == 0 { 
-                    *building_texture = building_textures.0.clone();
-                }
-                else if building_conf.state == 1 { 
-                    *building_texture = building_textures.1.clone();
-                }
-                else if building_conf.state == 2 { 
-                    *building_texture = building_textures.2.clone();
+                match building_conf.state {
+                    -1 => { commands.entity(building).despawn(); },
+                    0 => { *building_texture = building_textures.0.clone(); },
+                    1 => { *building_texture = building_textures.1.clone(); },
+                    2 => { *building_texture = building_textures.2.clone(); },
+                    _ => { println!("No such building state!"); }
                 }
 
                 break;
