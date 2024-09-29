@@ -15,6 +15,7 @@ mod bullet;
 mod building;
 mod game_logic;
 mod score;
+mod border;
 
 use animation::execute_animation;
 use building::{Building, BuildingTexture};
@@ -22,9 +23,10 @@ use bullet::{Bullet, BulletCooldown, BulletTexture};
 use collision::{alien_x_building_collision, bullet_x_allien_collision, bullet_x_building_collision};
 use alien::{Alien, AlienTextureAtlas};
 use starship::{Starship, StarshipTexture};
+use border::{Border, BorderTexture};
 
-const WINDOW_WIDTH: f32 = 1920.0;
-const WINDOW_HEIGHT: f32 = 1080.0;
+const LOGIC_WIDTH: f32 = 960.0;
+const LOGIC_HEIGHT: f32 = 1080.0;
 
 /// Set camera config
 fn setup_camera(
@@ -36,7 +38,7 @@ fn setup_camera(
             projection: OrthographicProjection {
                 far: 1000.0, 
                 near: -1000.0,
-                scaling_mode: ScalingMode::Fixed{width: 1920.0, height: 1080.0},
+                scaling_mode: ScalingMode::Fixed{width: LOGIC_WIDTH, height: LOGIC_HEIGHT},
                 ..default()
             },
             ..default()
@@ -50,14 +52,14 @@ fn main() {
             WindowPlugin {
                 primary_window: Some(Window {
                     title: String::from("Space invaders"),
-                    resolution: WindowResolution::new(WINDOW_WIDTH, WINDOW_HEIGHT),
+                    resolution: WindowResolution::new(LOGIC_WIDTH, LOGIC_HEIGHT),
                     mode: WindowMode::Windowed,
                     ..default()
                 }),
                 ..default()
             }
         ))
-        .add_systems(PreStartup, ( // load resources
+        .add_systems(PreStartup, ( // load resources (image sprites, atlases, logic timers)
             BulletCooldown::load,
             BulletTexture::load,
             StarshipTexture::load,
@@ -66,14 +68,16 @@ fn main() {
             alien_matrix::MatrixState::load,
             BuildingTexture::load,
             score::load_scores,
+            BorderTexture::load
         ).chain())
-        .add_systems(Startup, (
+        .add_systems(Startup, ( // spawn basic objects
             setup_camera,
+            Border::load,
             Starship::spawn,
             Building::spawn,
             score::CurrentScore::spawn
         ).chain()) 
-        .add_systems(Update, (
+        .add_systems(Update, ( // tick logic timers, check collisions, run const animations
             bullet_x_allien_collision,
             bullet_x_building_collision,
             alien_x_building_collision,

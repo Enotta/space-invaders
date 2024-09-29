@@ -1,7 +1,9 @@
 use bevy::prelude::*;
 
-use crate::{building::{Building, BuildingTexture}, 
-            score::{self, BestScore, CurrentScore},
+use crate::{LOGIC_HEIGHT,
+            border::{Border, BorderTexture}, 
+            building::{Building, BuildingTexture}, 
+            score::{self, BestScore, CurrentScore}, 
             starship::{Starship, StarshipTexture}};
 
 /// Game over screen if all buildings are destroyed. Restart on ENTER
@@ -16,9 +18,11 @@ pub fn run(
 
     // Restart game
     keyboard_input: Res<ButtonInput<KeyCode>>,
+    border_commands: Commands,
     starship_commands: Commands,
     building_commands: Commands,
     score_commands: Commands,
+    border_texture: Res<BorderTexture>,
     starship_texture: Res<StarshipTexture>,
     building_texture: Res<BuildingTexture>
 ) {
@@ -27,10 +31,9 @@ pub fn run(
             best_score.0 = cur_score.0;
         }
 
-        commands.spawn(TextBundle {
-            style: Style {
-                left: Val::Percent(30.0),
-                top: Val::Percent(35.0),
+        commands.spawn(Text2dBundle {
+            transform: Transform {
+                translation: Vec3::new(0.0, LOGIC_HEIGHT / 2.45, 0.0),
                 ..default()
             },
             text: Text::from_section(
@@ -50,6 +53,7 @@ pub fn run(
 
         if keyboard_input.pressed(KeyCode::Enter) {
             cur_score.0 = 0;
+            Border::load(border_commands, border_texture);
             Starship::spawn(starship_commands, starship_texture);
             Building::spawn(building_commands, building_texture);
             score::CurrentScore::spawn(score_commands);

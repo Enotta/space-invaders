@@ -38,12 +38,12 @@ impl Starship {
         let mut starship_pos = query.single_mut();
 
         if keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::ArrowLeft) {
-            if starship_pos.translation.x > (-crate::WINDOW_WIDTH + STARSHIP_SIZE.x) / 2.0 {
+            if starship_pos.translation.x > (-crate::LOGIC_WIDTH + STARSHIP_SIZE.x) / 2.0 {
                 starship_pos.translation.x -= STARSHIP_VELOCITY;
             }
         }
         else if keyboard_input.pressed(KeyCode::KeyD) ||  keyboard_input.pressed(KeyCode::ArrowRight) {
-            if starship_pos.translation.x < (crate::WINDOW_WIDTH - STARSHIP_SIZE.x) / 2.0 {
+            if starship_pos.translation.x < (crate::LOGIC_WIDTH - STARSHIP_SIZE.x) / 2.0 {
                 starship_pos.translation.x += STARSHIP_VELOCITY;
             }
         }
